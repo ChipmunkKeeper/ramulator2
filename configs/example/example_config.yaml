@@ -1,0 +1,53 @@
+Frontend:
+  impl: LoadStoreTrace
+  clock_ratio: 8
+  num_expected_insts: 500000
+  traces: 
+    - configs/example/test.trace
+
+  Translation:
+  # RandomTranslation: 随机地址映射策略
+  # NoTranslation: 虚拟地址即为物理地址
+    impl: RandomTranslation
+    max_addr: 2147483648
+              
+
+MemorySystem:
+  # 通用DRAM
+  # 还有BHDRAMSystem
+  impl: GenericDRAM 
+  clock_ratio: 3 # mem和cpu时钟比=3:8（cpu快）
+
+  DRAM:
+    impl: DDR4
+    org:
+      preset: DDR4_8Gb_x8
+      channel: 1
+      rank: 2
+    timing:
+      preset: DDR4_2400R
+
+  Controller:
+  # 通用策略
+  # 还有PRACDRAMController
+    impl: Generic 
+    Scheduler:
+    # first-ready first-come first-serve调度策略
+      impl: FRFCFS
+    RefreshManager:
+    # 所有bank一起刷新，还有PerBank，Selective
+      impl: AllBank
+    RowPolicy:
+    # 行关闭，访问后该行会被关闭，数据不会再row buffer中
+    # 还有OpenRowPolicy，HybridRowPolicy不行
+      impl: ClosedRowPolicy
+    # 一个bank可以同时激活4行，由于subarray parallelism
+      cap: 4
+    plugins:
+
+  AddrMapper:
+  # 映射策略，从左到右从地址高位到低位
+  # ChRaBaRoCo: Channel -> Rank -> Bank -> Row -> Column
+  # RoBaRaCoCh: Row -> Bank -> Rank -> Column -> Channel
+  # MOP4CLXOR
+    impl: RoBaRaCoCh

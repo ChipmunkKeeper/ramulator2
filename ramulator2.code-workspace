@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "ramulator2",
+			"path": "."
+		},
+		{
+			"name": "exps",
+			"path": "../../projects/HB2/exps"
+		},
+		{
+			"name": "jwuev",
+			"path": "../.."
+		}
+	],
+	"settings": {}
+}

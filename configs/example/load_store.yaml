@@ -1,19 +1,17 @@
 Frontend:
-  impl: SimpleO3
-  clock_ratio: 8
-  num_expected_insts: 500000
-  traces: 
-    - example_inst.trace
+  impl: LoadStoreTrace
+  clock_ratio: 1
+  # num_expected_insts: 500000
+  path: configs/example/test.trace
 
   Translation:
-    impl: RandomTranslation
+    impl: NoTranslation
     max_addr: 2147483648
               
 
 MemorySystem:
-  impl: GenericDRAM
-  clock_ratio: 3
-
+  impl: GenericDRAM 
+  clock_ratio: 1
   DRAM:
     impl: DDR4
     org:
@@ -21,18 +19,19 @@ MemorySystem:
       channel: 1
       rank: 2
     timing:
-      preset: DDR4_2400R 
+      preset: DDR4_2400R
 
   Controller:
-    impl: Generic
+    impl: Generic 
     Scheduler:
       impl: FRFCFS
     RefreshManager:
       impl: AllBank
     RowPolicy:
-      impl: ClosedRowPolicy
+      impl: OpenRowPolicy
       cap: 4
     plugins:
 
   AddrMapper:
-    impl: RoBaRaCoCh
+    # impl: RoBaRaCoCh
+    impl: ChRaBaRoCo

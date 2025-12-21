@@ -63,7 +63,7 @@ Configure the project and build the executable
 ```bash
   $ mkdir build
   $ cd build
-  $ cmake ..
+  $ cmake .. // otherwise try: cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
   $ make -j
   $ cp ./ramulator2 ../ramulator2
   $ cd ..

@@ -21,6 +21,7 @@ MemorySystem:
   clock_ratio: 3
 
   DRAM:
+  # Variable Refresh Rate DDR5
     impl: DDR5-VRR
     org:
       preset: DDR5_16Gb_x8
@@ -29,6 +30,8 @@ MemorySystem:
     timing:
       preset: DDR5_3200AN 
     RFM:
+    # Refresh Management
+    # bank refresh count，每次刷新2个bank
       BRC: 2
     PRAC: true
 
