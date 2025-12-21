@@ -7,3 +7,5 @@ autobuild.sh
 
 # 忽略 perf_comparison/traces 及其子目录中的所有 .trace 文件
 perf_comparison/traces/**/*.trace 
+
+*.code-workspace

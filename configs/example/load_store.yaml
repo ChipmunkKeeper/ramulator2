@@ -2,7 +2,7 @@ Frontend:
   impl: LoadStoreTrace
   clock_ratio: 1
   # num_expected_insts: 500000
-  path: configs/example/test.trace
+  path: configs/example/load_store.trace
 
   Translation:
     impl: NoTranslation
