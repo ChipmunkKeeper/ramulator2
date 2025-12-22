@@ -31,7 +31,7 @@ MemorySystem:
       preset: DDR5_3200AN 
     RFM:
     # Refresh Management
-    # bank refresh count，每次刷新2个bank
+    # 防止RowHammer的额外刷新延迟开销系数，时间=2*BRC*normal_refresh_time
       BRC: 2
     PRAC: true
 

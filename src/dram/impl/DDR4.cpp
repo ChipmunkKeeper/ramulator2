@@ -21,6 +21,8 @@ class DDR4 : public IDRAM, public Implementation {
       {"DDR4_16Gb_x4",  {16<<10,  4,  {1, 1, 4, 4, 1<<18, 1<<10}}},
       {"DDR4_16Gb_x8",  {16<<10,  8,  {1, 1, 4, 4, 1<<17, 1<<10}}},
       {"DDR4_16Gb_x16", {16<<10,  16, {1, 1, 2, 4, 1<<17, 1<<10}}},
+      // newly added for HB DRAM test
+      {"HB_16Mb_x64",    {16,     64, {1, 1, 1, 1, 1<<12, 1<<6}}},
     };
 
     inline static const std::map<std::string, std::vector<int>> timing_presets = {
@@ -49,6 +51,11 @@ class DDR4 : public IDRAM, public Implementation {
       {"DDR4_3200W",  {3200,   4,  20,  20,   20,   52,   72,   24,   12,  16,   4,    8,   -1,   -1,    4,    12,  -1,  -1,  -1,   2,    625} },
       {"DDR4_3200AA", {3200,   4,  22,  22,   22,   52,   74,   24,   12,  16,   4,    8,   -1,   -1,    4,    12,  -1,  -1,  -1,   2,    625} },
       {"DDR4_3200AC", {3200,   4,  24,  24,   24,   52,   76,   24,   12,  16,   4,    8,   -1,   -1,    4,    12,  -1,  -1,  -1,   2,    625} },
+    
+      // newly added for HB DRAM test
+      // nWR及其之后数据都是不准的
+      //   name       rate   nBL  nCL  nRCD  nRP   nRAS  nRC   nWR  nRTP nCWL nCCDS nCCDL nRRDS nRRDL nWTRS nWTRL nFAW  nRFC_ns nREFI_ns nCS,  tCK_ps
+      {"HB_500",      {500 ,   64,  2,   9,    6,   17,   23,     1,    1,   1,   1,   1,    7,    7,     1,    1,   10,  376,  -1,    0,   2000}},
     };
 
     inline static const std::map<std::string, std::vector<double>> voltage_presets = {
