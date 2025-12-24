@@ -1,0 +1,35 @@
+Frontend:
+  Translation:
+    impl: NoTranslation
+    max_addr: 2147483648
+  clock_ratio: 1
+  impl: SimpleO3
+  num_expected_insts: 500000
+  traces: 
+    - configs/example/example_inst.trace
+  
+MemorySystem:
+  AddrMapper:
+    impl: ChRaBaRoCo
+  Controller:
+    RefreshManager:
+      impl: AllBank
+    RowPolicy:
+      impl: OpenRowPolicy
+    Scheduler:
+      impl: FRFCFS
+    impl: Generic
+    plugins: null
+  DRAM:
+    RFM:
+      BRC: 2
+    impl: DDR5
+    org:
+    # DDR5 sub-channel 32bit
+      preset: DDR5_8Gb_x16
+      channel: 1
+      rank: 1
+    timing:
+      preset: DDR5_5600
+  clock_ratio: 1
+  impl: GenericDRAM

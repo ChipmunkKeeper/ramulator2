@@ -54,8 +54,11 @@ class DDR4 : public IDRAM, public Implementation {
     
       // newly added for HB DRAM test
       // nWR及其之后数据都是不准的
-      //   name       rate   nBL  nCL  nRCD  nRP   nRAS  nRC   nWR  nRTP nCWL nCCDS nCCDL nRRDS nRRDL nWTRS nWTRL nFAW  nRFC_ns nREFI_ns nCS,  tCK_ps
-      {"HB_500",      {500 ,   64,  2,   9,    6,   17,   23,     1,    1,   1,   1,   1,    7,    7,     1,    1,   10,  376,  -1,    0,   2000}},
+      // burst x64, bitwdith=64b -> nBL=1，这里nBL应该为0.5（假设250MHz）
+      // ！！注意：DDR一个周期传两次数据，这里忽略了这个问题，因为假设不能并行，所以永远不可能这么快传输
+      //   name       rate   nBL  nCL  nRCD  nRP   nRAS  nRC   nWR  nRTP nCWL nCCDS nCCDL nRRDS nRRDL nWTRS nWTRL nFAW  nRFC_ns nREFI nCS,  tCK_ps
+      // {"HB_500",   {500 ,   1,  2,   9,    6,   17,   23,     1,    1,   1,   1,   1,    7,    7,     1,    1,   10,  376,  -1,    0,   2000}},
+      {"HB_500",      {500 ,   1,  1,   5,    3,   9,   12,     1,    1,   1,   1,   1,    4,    4,     1,    1,   5,  376,  -1,    0,   4000}},
     };
 
     inline static const std::map<std::string, std::vector<double>> voltage_presets = {

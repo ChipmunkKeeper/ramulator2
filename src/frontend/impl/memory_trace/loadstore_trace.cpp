@@ -41,9 +41,19 @@ class LoadStoreTrace : public IFrontEnd, public Implementation {
     void tick() override {
       const Trace& t = m_trace[m_curr_trace_idx];
       bool request_sent = m_memory_system->send({t.addr, t.is_write ? Request::Type::Write : Request::Type::Read});
+      
+      // if (m_trace.empty()) {
+      //    std::cout << "ERROR: Trace is empty in tick!" << std::endl;
+      //    return;
+      // }
+      // std::cout << m_trace_count << std::endl;
       if (request_sent) {
         m_curr_trace_idx = (m_curr_trace_idx + 1) % m_trace_length;
         m_trace_count++;
+
+      //   if (m_trace_count % 100 == 0) {
+      //     std::cout << "DEBUG: Processed " << m_trace_count << " requests." << std::endl;
+      //   }
       }
     };
 

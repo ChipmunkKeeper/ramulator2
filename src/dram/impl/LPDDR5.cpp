@@ -185,8 +185,9 @@ class LPDDR5 : public IDRAM, public Implementation {
 
   private:
     void set_organization() {
-      // Channel width
-      m_channel_width = param_group("org").param<int>("channel_width").default_val(32);
+      // Channel width， 改为16bit
+      // m_channel_width = param_group("org").param<int>("channel_width").default_val(32);
+      m_channel_width = param_group("org").param<int>("channel_width").default_val(16);
 
       // Organization
       m_organization.count.resize(m_levels.size(), -1);

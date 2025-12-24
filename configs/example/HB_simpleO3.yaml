@@ -3,12 +3,12 @@ Frontend:
   clock_ratio: 8
   num_expected_insts: 500000
   traces: 
-    - configs/example/example_inst.trace
+    - configs/example/example_prac_attacker.trace
 
   Translation:
     impl: RandomTranslation
-    # 2MB
-    max_addr: 16777216
+    # 2GB
+    max_addr: 2147483648
               
 
 MemorySystem:
@@ -16,11 +16,12 @@ MemorySystem:
   clock_ratio: 3
 
   DRAM:
+    # impl: HB_DRAM
     impl: DDR4
     org:
       preset: HB_16Mb_x64
     timing:
-      preset: HB_500 
+      preset: HB_500SDR
 
   Controller:
     impl: Generic
@@ -31,6 +32,7 @@ MemorySystem:
     RowPolicy:
       impl: ClosedRowPolicy
       cap: 4
+      # impl: OpenRowPolicy
     plugins:
 
   AddrMapper:
