@@ -21,10 +21,10 @@ class HB_DRAM : public IDRAM, public Implementation {
       // nBL: 1 (SDR, 每次传64bit，占1个周期)
       // nCCDS (Subarray切换): 1 (同一物理Bank不同Subarray，假设极快)
       // nCCDL (Bank切换): 1 (不同物理Bank，完全并行)
-      // nWR  nRTP nCWL 为假设值
-      //   name       rate   nBL  nCL  nRCD   nRP   nRAS  nRC   nWR  nRTP nCWL nCCDS nCCDL nRRDS nRRDL nWTRS nWTRL nFAW    nRFC  nREFI nCS,  tCK_ps
-      // 采用4ms刷新间隔
-      {"HB_500SDR",  {500,    1,   1,   9,    6,    17,   17,   5,    2,   5,    1,    1,    2,    2,    1,    1,    10,   188,  2000,   0,   2000}},
+      // nWR（包括）及以后至FAW（包括）的值都参考DDR4  
+      //   name       rate   nBL  nCL  nRCD   nRP   nRAS  nRC   nWR  nRTP nCWL nCCDS nCCDL nRRDS  nRRDL  nWTRS nWTRL nFAW  nRFC  nREFI   nCS  tCK_ps
+      // 采用4ms刷新间隔                                         |<--参考DDR4-->| |<-不区分subarray和BG->| |<---参考DDR4--->| 因为只有一个bank，short的值和long一样
+      {"HB_500SDR",  {500,    1,   1,   9,    6,    17,   17,   24,   12,  16,    1,    1,    11,   11,    12,   12,   48,   188,  2000,   2,   2000}},
     };
 
     inline static const std::map<std::string, std::vector<double>> voltage_presets = {

@@ -15,7 +15,7 @@ if not os.path.exists(result_base_dir):
     os.makedirs(result_base_dir)
 
 # archs = ["DDR3", "DDR4", "DDR5", "GDDR6", "HB"]
-archs = ["HB",]
+archs = ["DDR4",]
 arch_configs = {
     "HB": {"impl": "HB_DRAM", "org_preset": "HB_16Mb_x64", "timing_preset": "HB_500SDR",},
     "DDR3": {"impl": "DDR3", "org_preset": "DDR3_8Gb_x16", "timing_preset": "DDR3_2133L",},
@@ -34,10 +34,10 @@ for arch in archs:
 
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
-    if arch in ["HB",]:  # busrt 总长8B
-        config["Frontend"]["path"] = os.path.join(config_base_dir, "traces/streaming_read_160MB_step_8B.trace")
+    if arch in ["HB",]:  # busrt 总长8B 
+        config["Frontend"]["path"] = os.path.join(config_base_dir, "traces/streaming_read_1MB_step_8B.trace")
     elif arch in ["DDR5", "DDR3", "DDR4"]:  # burst 总长64B
-        config["Frontend"]["path"] = os.path.join(config_base_dir, "traces/streaming_read_step_64B.trace")
+        config["Frontend"]["path"] = os.path.join(config_base_dir, "traces/streaming_read_1MB_step_64B.trace")
     else:
         raise NotImplementedError(f"arch {arch} not supported yet.")
     # config["MemorySystem"]["DRAM"] = {
