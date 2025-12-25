@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <functional>
 
 #include "frontend/frontend.h"
 #include "base/exception.h"
@@ -19,9 +20,11 @@ class LoadStoreTrace : public IFrontEnd, public Implementation {
     };
     std::vector<Trace> m_trace;
 
-    size_t m_trace_length = 0;
     size_t m_curr_trace_idx = 0;
-    size_t m_trace_count = 0;
+    size_t m_trace_length = 0;
+
+    int m_inflight_reqs = 0; 
+    int m_window_depth = 128; 
 
     Logger_t m_logger;
 
@@ -29,11 +32,14 @@ class LoadStoreTrace : public IFrontEnd, public Implementation {
     void init() override {
       std::string trace_path_str = param<std::string>("path").desc("Path to the load store trace file.").required();
       m_clock_ratio = param<uint>("clock_ratio").required();
+      
+      // 窗口大小，默认 128
+      m_window_depth = param<int>("window_depth").desc("Max in-flight requests (flow control).").default_val(128);
 
       m_logger = Logging::create_logger("LoadStoreTrace");
       m_logger->info("Loading trace file {} ...", trace_path_str);
       init_trace(trace_path_str);
-      m_logger->info("Loaded {} lines.", m_trace.size());
+      m_logger->info("Loaded {} lines. Window Depth: {}", m_trace.size(), m_window_depth);
     };
 
     void tick() override {
@@ -41,22 +47,39 @@ class LoadStoreTrace : public IFrontEnd, public Implementation {
           return;
       }
 
+      // 流控： 当前未完成的请求数达到窗口深度，就不发新请求
+      if (m_inflight_reqs >= m_window_depth) {
+          return;
+      }
+
       const Trace& t = m_trace[m_curr_trace_idx];
 
-      // 尝试发送请求
-      // 如果 Controller 缓冲区满了，send 会返回 false
-      bool request_sent = m_memory_system->send({
-          t.addr, 
-          t.is_write ? Request::Type::Write : Request::Type::Read
-      });
+
+      auto req_callback = [this](Request& req) {
+          this->m_inflight_reqs--;
+      };
+
+      Request req(
+          t.addr,
+          t.is_write ? Request::Type::Write : Request::Type::Read,
+          0,            // command id
+          req_callback 
+      );
+
+      bool request_sent = m_memory_system->send(req);
       
       if (request_sent) {
-        // 只有发送成功了，才移动到下一条 Trace
+        // 发送成功
         m_curr_trace_idx++;
-        m_trace_count++;
+        m_inflight_reqs++;
+      } else {
+        // 发送失败
       }
-      // 如果发送失败 (false)，直接 return，下一周期 (tick) 再重试同一条指令
-      // 这样天然形成了流控，不会堵死控制器
+    };
+
+    // 所有发出去的请求都收到了回调 (m_inflight_reqs == 0)才结束仿真
+    bool is_finished() override {
+      return (m_curr_trace_idx >= m_trace_length) && (m_inflight_reqs == 0); 
     };
 
   private:
@@ -83,10 +106,6 @@ class LoadStoreTrace : public IFrontEnd, public Implementation {
       }
       trace_file.close();
       m_trace_length = m_trace.size();
-    };
-
-    bool is_finished() override {
-      return m_curr_trace_idx >= m_trace_length; 
     };
 };
 
